@@ -1,0 +1,22 @@
+A binary file.  The first section of the file appears to be a list of entries, made up of pairs of 4 byte values.
+
+The first entry seems to be a header: 0x0000 0x0001 0x0000 0x0117
+
+0x0000 0x0001 in that position appears to mean "header entry" - no other entries have a value in
+that position.  The 0x0000 0x0117 is the number of following entries.
+
+The rest of the entries appear to follow this pattern:
+
+dword 1: subsystem code
+dword 2: offset to the block of error codes for this subsystem
+
+at a given file offset from dword 2 above, there appears to be the following block header:
+
+struct {
+  word startingCode; (can be negative - e.g. 0xfff8)
+  word endingCode;
+  char[64] subsystem_name; // 64 is max length.  \0 terminated
+  char[64] module_name;    // 64 is max length.  \0 terminated
+}
+
+directly following this code will be endingCode-startingCode \0 terminated strings.
